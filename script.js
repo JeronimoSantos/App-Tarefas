@@ -41,7 +41,7 @@
 //    console.log("")
 // }
 
-const { select, input } = require('@inquirer/prompts')
+const { select, input, checkbox } = require('@inquirer/prompts')
 
 let meta = {
     value: "Dormir 7 horas",
@@ -59,6 +59,33 @@ const cadastrarMetas = async () => {
     }
     
     metas.push({ value: meta, checked: false})
+}
+
+const listarMetas = async () => {
+    const respostas = await checkbox({
+        message: "Usar as setas para marcar e o enter para finalizar a tarefa",
+        choices: [...metas],
+        instructions: false,
+    })
+
+    if (respostas.length == 0) {
+        console.log("Sem respostas")
+        return
+    }
+
+    metas.forEach((m) => {
+        m.checked = false
+    })
+
+    respostas.forEach((resposta) => {
+        const meta = metas.find((m) => {
+            return m.value == resposta
+        })
+
+        meta.checked = true
+    })
+
+    console.log("Meta(s) Concluidas!")
 }
 
 const start = async () => {
@@ -90,8 +117,7 @@ const start = async () => {
                 console.log(metas)
                 break
             case "listar":
-
-                console.log("Revisando conteudos de JavaScript")
+                await listarMetas()
                 break
             case "sair":
 
